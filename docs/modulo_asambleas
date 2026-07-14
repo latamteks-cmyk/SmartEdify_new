@@ -457,13 +457,33 @@ Este módulo posiciona al software como una herramienta indispensable para la go
 
 ### 10.2. Diagrama de Arquitectura (Referencia)
 ´´´mermaid
-[Governance-Service] ←→ [Compliance-Service]
-↕ ↕
-[Streaming-Service] [Documents-Service]
-↕ ↕
-[Reservations-Service] [Notifications-Service]
-↕ ↕
-[Finance-Service] [Payroll-Service]
-↕ ↕
-[Asset-Management] [HR-Compliance-Service]
+flowchart TD
+    %% Nodos Columna Izquierda
+    Gov[Governance-Service]
+    Stream[Streaming-Service]
+    Res[Reservations-Service]
+    Fin[Finance-Service]
+    Asset[Asset-Management]
+
+    %% Nodos Columna Derecha
+    Comp[Compliance-Service]
+    Doc[Documents-Service]
+    Notif[Notifications-Service]
+    Pay[Payroll-Service]
+    HR[HR-Compliance-Service]
+
+    %% Conexión Horizontal
+    Gov <--> Comp
+
+    %% Conexiones Verticales Izquierda
+    Gov <--> Stream
+    Stream <--> Res
+    Res <--> Fin
+    Fin <--> Asset
+
+    %% Conexiones Verticales Derecha
+    Comp <--> Doc
+    Doc <--> Notif
+    Notif <--> Pay
+    Pay <--> HR
 ´´´
