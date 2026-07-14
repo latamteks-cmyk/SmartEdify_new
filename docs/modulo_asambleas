@@ -1,4 +1,9 @@
-# Descripción Funcional del Módulo de Gestión de Asambleas para un Software de Condominio
+He preparado el documento completo en formato Markdown, listo para publicar en GitHub. Incluye todas las secciones, tablas, diagramas Mermaid y las mejoras validadas.
+
+---
+
+```markdown
+# Descripción Funcional del Módulo de Gestión de Asambleas
 
 **Versión:** 4.0 – Arquitectura de Microservicios con Mejoras Incorporadas  
 **Fecha:** 14 de julio de 2026  
@@ -39,8 +44,6 @@ El presente documento describe en detalle las funcionalidades del módulo de ges
 | **Fase 5** | Post-Asamblea – Generación del Acta y Archivo |
 
 ### 1.2. Principios Rectores
-
-El sistema se fundamenta en los siguientes principios:
 
 | Principio | Descripción |
 | :--- | :--- |
@@ -645,7 +648,7 @@ Una vez restablecidos los servicios:
 
 **Descripción:** Permite impugnar votos, decisiones o la validez de toda la asamblea, con un flujo formal que garantiza transparencia y debido proceso.
 
-#### Estados de Impugnación
+#### 7.1.1. Estados de Impugnación
 
 | Estado | Descripción | Responsable | Plazo (configurable) |
 | :--- | :--- | :--- | :--- |
@@ -659,10 +662,9 @@ Una vez restablecidos los servicios:
 | **Apelación Resuelta** | Decisión final de Junta | Junta Directiva | 10 días hábiles |
 | **Archivada** | Proceso cerrado | Governance-Service | - |
 
-#### Tipos de Impugnación
+#### 7.1.2. Tipos de Impugnación
 
 | Tipo | Descripción | Requisitos |
 | :--- | :--- | :--- |
 | **Voto Individual** | Impugnar un voto específico por irregularidad | Evidencia de irregularidad |
-| **Decisión** | Impugnar un acuerdo adoptado | Violación de mayoría o quórum |
-| **Procedimiento** | Impugnar el desarrollo de la asamblea | Violación de regl
+| **
