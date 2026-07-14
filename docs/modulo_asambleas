@@ -385,3 +385,4 @@ Comp <--> Doc
 Doc <--> Notif
 Notif <--> Pay
 Pay <--> HR
+```
