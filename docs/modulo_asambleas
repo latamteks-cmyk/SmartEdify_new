@@ -1,14 +1,61 @@
 # Descripción Funcional del Módulo de Gestión de Asambleas para un Software de Condominio
-**Versión:** 3.0 – Arquitectura de Microservicios
-**Fecha:** 14 de julio de 2026
-**Estado:** Especificación definitiva
+
+**Versión:** 4.0 – Arquitectura de Microservicios con Mejoras Incorporadas  
+**Fecha:** 14 de julio de 2026  
+**Estado:** Especificación definitiva  
 **Alcance:** Cobertura total del ciclo de vida de la asamblea con integración completa a la arquitectura de microservicios del ecosistema.
+
 ---
+
+## Tabla de Contenido
+
+1. [Introducción y Visión General](#1-introducción-y-visión-general)
+2. [Arquitectura de Microservicios](#2-arquitectura-de-microservicios)
+3. [Flujo Funcional Detallado](#3-flujo-funcional-detallado)
+4. [Modo de Emergencia y Resiliencia](#4-modo-de-emergencia-y-resiliencia)
+5. [Integración con Otros Servicios](#5-integración-con-otros-servicios)
+6. [Matriz de Roles y Permisos](#6-matriz-de-roles-y-permisos)
+7. [Nuevas Mejoras Incorporadas](#7-nuevas-mejoras-incorporadas)
+8. [Oportunidades de Mejora y Buenas Prácticas](#8-oportunidades-de-mejora-y-buenas-prácticas)
+9. [Consideraciones Técnicas de Microservicios](#9-consideraciones-técnicas-de-microservicios)
+10. [Flujo de Estados de la Asamblea](#10-flujo-de-estados-de-la-asamblea)
+11. [Conclusión](#11-conclusión)
+12. [Anexos](#12-anexos)
+
+---
+
 ## 1. Introducción y Visión General
+
 El presente documento describe en detalle las funcionalidades del módulo de gestión de asambleas, diseñado bajo una arquitectura de microservicios que garantiza escalabilidad, resiliencia y mantenibilidad. Este módulo es el corazón de la **gobernanza del condominio**, orquestando todo el ciclo de vida de las asambleas desde la iniciativa hasta el archivo del acta.
-El sistema se fundamenta en un enfoque **omnicanal (presencial-virtual)** con **modo de emergencia** integrado para garantizar la continuidad operativa, incluso ante fallos temporales de servicios externos. La **Inteligencia Artificial** está presente en todas las fases críticas: validación legal, redacción de actas y análisis de cumplimiento.
-### 1.1. Arquitectura de Microservicios
+
+### 1.1. Alcance del Módulo
+
+| Fase | Descripción |
+| :--- | :--- |
+| **Fase 1** | Iniciativa y Gestión de Propuestas |
+| **Fase 2** | Convocatoria y Gestión de la Agenda |
+| **Fase 3** | Habilitación y Participación (Pre-Asamblea) |
+| **Fase 4** | Desarrollo de la Asamblea y Votación |
+| **Fase 5** | Post-Asamblea – Generación del Acta y Archivo |
+
+### 1.2. Principios Rectores
+
+El sistema se fundamenta en los siguientes principios:
+
+| Principio | Descripción |
+| :--- | :--- |
+| **Omnicanal** | Soporte presencial y virtual con experiencia unificada |
+| **Modo de Emergencia** | Continuidad operativa ante fallos de servicios externos |
+| **Inteligencia Artificial** | Validación legal, redacción de actas y análisis de cumplimiento |
+| **Transparencia** | Procesos auditables y trazables con notarización en blockchain |
+| **Accesibilidad** | Soporte multilingüe y cumplimiento de estándares de accesibilidad |
+
+---
+
+## 2. Arquitectura de Microservicios
+
 El módulo de asambleas interactúa con los siguientes servicios del ecosistema:
+
 | Servicio | Responsabilidad | Interacción con Asambleas |
 | :--- | :--- | :--- |
 | **Governance-Service** | Administra la toma de decisiones y asambleas de principio a fin | **SERVICIO PRINCIPAL** - Orquesta todo el flujo |
@@ -21,35 +68,164 @@ El módulo de asambleas interactúa con los siguientes servicios del ecosistema:
 | **Notifications-Service** | Canal de comunicación | Envía convocatorias, recordatorios y actas |
 | **Documents-Service** | Archivo oficial y firma electrónica | Almacena actas y gestiona firmas digitales |
 | **Streaming-Service** | Transmisión en vivo y participación remota | Gestiona sala virtual y grabación |
+| **Authentication-Service** | Seguridad y control de accesos | Gestiona autenticación y autorización |
+| **Blockchain-Service** | Notarización e integridad | Registra hashes de actas y votaciones |
+
+### 2.1. Diagrama de Arquitectura
+
+```mermaid
+flowchart TB
+    subgraph Presentacion["🖥️ Capa de Presentación"]
+        UI["Aplicación Web / Móvil"]
+    end
+
+    subgraph Core["🏛️ Capa de Orquestación"]
+        Gov["Governance-Service\n(Orquestador Principal)"]
+    end
+
+    subgraph Validacion["⚖️ Capa de Validación"]
+        Comp["Compliance-Service\n(Validación Legal)"]
+        Fin["Finance-Service\n(Verificación Financiera)"]
+        HR["HR-Compliance-Service\n(Cumplimiento Laboral)"]
+    end
+
+    subgraph Soporte["🔧 Capa de Soporte Operativo"]
+        Stream["Streaming-Service\n(Transmisión y Grabación)"]
+        Res["Reservations-Service\n(Gestión de Espacios)"]
+        Asset["Asset-Management-Service\n(Inventario e Instalaciones)"]
+        Pay["Payroll-Service\n(Pago de Empleados)"]
+    end
+
+    subgraph Comunicacion["📨 Capa de Comunicación y Archivo"]
+        Notif["Notifications-Service\n(Notificaciones)"]
+        Doc["Documents-Service\n(Archivo y Firma Digital)"]
+        BC["Blockchain-Service\n(Notarización)"]
+    end
+
+    subgraph Seguridad["🔐 Capa de Seguridad"]
+        Auth["Authentication-Service\n(Autenticación y Autorización)"]
+    end
+
+    subgraph Analitica["📊 Capa de Analítica"]
+        BI["BI/KPI-Service\n(Análisis y Dashboards)"]
+    end
+
+    subgraph Infra["🛡️ Capa de Resiliencia"]
+        Cache["Caché Local\n(Modo de Emergencia)"]
+        Bus["Event Bus / Message Queue"]
+    end
+
+    %% Conexiones desde UI
+    UI -->|"Solicitudes"| Gov
+    UI -->|"Autenticación"| Auth
+
+    %% Governance → Servicios de Validación
+    Gov <-->|"Validación Legal"| Comp
+    Gov <-->|"Verificación Financiera"| Fin
+    Gov <-->|"Cumplimiento Laboral"| HR
+
+    %% Governance → Servicios de Soporte
+    Gov <-->|"Sala Virtual/Grabación"| Stream
+    Gov <-->|"Reserva de Espacios"| Res
+    Gov <-->|"Estado Instalaciones"| Asset
+    Gov <-->|"Asistencia Personal"| Pay
+
+    %% Governance → Comunicación y Archivo
+    Gov -->|"Notificaciones"| Notif
+    Gov -->|"Documentos/Firma"| Doc
+    Gov -->|"Notarización"| BC
+
+    %% Conexiones entre capas
+    Comp <-->|"Valida Estado Financiero"| Fin
+    Stream -->|"Almacena Grabación"| Doc
+    Stream -->|"Eventos de Transmisión"| Notif
+    Res -->|"Verifica Aforo"| Comp
+    Doc -->|"Hash para Notarización"| BC
+
+    %% Modo de Emergencia
+    Gov -.->|"Fallback"| Cache
+    Comp -.->|"Fallback"| Cache
+    Fin -.->|"Fallback"| Cache
+    Doc -.->|"Fallback"| Cache
+
+    %% Event Bus
+    Gov -->|"Publica Eventos"| Bus
+    Comp -->|"Escucha"| Bus
+    Notif -->|"Escucha"| Bus
+    Doc -->|"Escucha"| Bus
+    Stream -->|"Escucha"| Bus
+    BI -->|"Escucha Eventos Enriquecidos"| Bus
+
+    %% Estilos
+    classDef presentacion fill:#F1C40F,color:#000,stroke:#D4AC0D,stroke-width:2px
+    classDef core fill:#2C3E50,color:#fff,stroke:#1A252F,stroke-width:2px
+    classDef validacion fill:#E67E22,color:#fff,stroke:#A04000,stroke-width:2px
+    classDef soporte fill:#27AE60,color:#fff,stroke:#1E8449,stroke-width:2px
+    classDef comunicacion fill:#8E44AD,color:#fff,stroke:#6C3483,stroke-width:2px
+    classDef seguridad fill:#E74C3C,color:#fff,stroke:#922B21,stroke-width:2px
+    classDef analitica fill:#3498DB,color:#fff,stroke:#2E86C1,stroke-width:2px
+    classDef infra fill:#7F8C8D,color:#fff,stroke:#5D6D7E,stroke-width:2px
+
+    class UI presentacion
+    class Gov core
+    class Comp,Fin,HR validacion
+    class Stream,Res,Asset,Pay soporte
+    class Notif,Doc,BC comunicacion
+    class Auth seguridad
+    class BI analitica
+    class Cache,Bus infra
+```
+
 ---
-## 2. Flujo Funcional Detallado
-### 2.1. Fase 1: Iniciativa y Gestión de Propuestas
+
+## 3. Flujo Funcional Detallado
+
+### 3.1. Fase 1: Iniciativa y Gestión de Propuestas
+
 El ciclo de vida de la asamblea inicia con la generación de una propuesta. El sistema centraliza, valida y da trazabilidad a cada idea que será sometida a consideración de la comunidad.
-#### 2.1.1. Origen de las Propuestas
+
+#### 3.1.1. Origen de las Propuestas
+
 El sistema permite la creación de propuestas desde tres roles claramente diferenciados:
-- **Junta Directiva:** Propuestas estratégicas o de gobierno.
-- **Administrador del Condominio:** Propuestas de gestión, operativas o de mantenimiento.
-- **Propietario/Inquilino:** Propuestas participativas, que requieren un número mínimo de respaldos (configurable por reglamento) para ser consideradas.
-**Mejora implementada:** **Biblioteca de Plantillas Inteligentes** con tipos predefinidos:
-- Presupuesto anual
-- Reformas estructurales (mayoría calificada)
-- Cambios de reglamento
-- Contratación de servicios
-- Obras de mantenimiento (mayoría simple)
-#### 2.1.2. Evaluación Legal con IA y Compliance-Service
+
+| Rol | Tipo de Propuesta | Requisitos Especiales |
+| :--- | :--- | :--- |
+| **Junta Directiva** | Propuestas estratégicas o de gobierno | Ninguno |
+| **Administrador del Condominio** | Propuestas de gestión, operativas o de mantenimiento | Ninguno |
+| **Propietario/Inquilino** | Propuestas participativas | Mínimo de respaldos (configurable) |
+
+#### 3.1.2. Biblioteca de Plantillas Inteligentes
+
+El sistema incluye plantillas predefinidas para agilizar la creación:
+
+| Plantilla | Tipo de Mayoría | Descripción |
+| :--- | :--- | :--- |
+| Presupuesto Anual | Mayoría Simple | Aprobación del presupuesto anual |
+| Reformas Estructurales | Mayoría Calificada (2/3) | Obras que afectan estructura del edificio |
+| Cambios de Reglamento | Mayoría Calificada (3/4) | Modificaciones al reglamento interno |
+| Contratación de Servicios | Mayoría Simple | Contratación de proveedores externos |
+| Obras de Mantenimiento | Mayoría Simple | Reparaciones y mantenimiento general |
+
+#### 3.1.3. Evaluación Legal con IA y Compliance-Service
+
 Una vez emitida la propuesta, el **Governance-Service** la envía al **Compliance-Service**:
+
 1. **Análisis Automático:** El Compliance-Service evalúa la propuesta contra:
-- Ley de Propiedad Horizontal del país
-- Reglamento interno del condominio
-- Jurisprudencia aplicable
+   - Ley de Propiedad Horizontal del país
+   - Reglamento interno del condominio
+   - Jurisprudencia aplicable
+
 2. **Verificación de Requisitos:** Determina:
-- Tipo de mayoría requerida (simple, calificada, unanimidad)
-- Competencia (asamblea ordinaria vs. extraordinaria)
-- Documentación obligatoria anexa
+   - Tipo de mayoría requerida (simple, calificada, unanimidad)
+   - Competencia (asamblea ordinaria vs. extraordinaria)
+   - Documentación obligatoria anexa
+
 3. **Retroalimentación:** Si detecta errores o ausencia de requisitos, la propuesta se devuelve al originador con sugerencias de corrección.
+
 4. **Aprobación Legal:** Solo cuando el Compliance-Service valida la propuesta, esta puede avanzar al siguiente estado.
-#### 2.1.3. Estados de la Propuesta
-El **Governance-Service** gestiona un flujo de estados visible para todos los implicados:
+
+#### 3.1.4. Estados de la Propuesta
+
 | Estado | Descripción | Responsable |
 | :--- | :--- | :--- |
 | **Borrador** | El originador está editando | Originador |
@@ -59,149 +235,267 @@ El **Governance-Service** gestiona un flujo de estados visible para todos los im
 | **En Consulta Vecinal** | Votación previa no vinculante | Propietarios |
 | **Aprobada para Agenda** | Lista para ser incluida en asamblea | Governance-Service |
 | **Rechazada** | Descartada por falta de respaldo | Compliance-Service |
-#### 2.1.4. Consulta Vecinal con Verificación de Respaldos
+
+#### 3.1.5. Consulta Vecinal con Verificación de Respaldos
+
 El **Governance-Service** coordina con el **Compliance-Service** para:
+
 - Calcular automáticamente el porcentaje mínimo de respaldos requerido
-- Verificar que los firmantes sean propietarios habilitados
-- Validar que no existan conflictos de interés (ej. propietario con deudas)
+- Verificar que los firmantes sean propietarios habilitados (vía Authentication-Service)
+- Validar que no existan conflictos de interés
 - Publicar resultados de la consulta en tiempo real
+
 **Modo de Emergencia:** Si el Compliance-Service no está disponible, el Governance-Service utiliza una copia local de las reglas (última versión sincronizada) para continuar la validación, registrando todas las acciones para reconciliación posterior.
+
 ---
-### 2.2. Fase 2: Convocatoria y Gestión de la Agenda
+
+### 3.2. Fase 2: Convocatoria y Gestión de la Agenda
+
 La convocatoria es el acto formal que da inicio al proceso de asamblea. El sistema automatiza la generación, selección y distribución de esta.
-#### 2.2.1. Creación de la Convocatoria
-1. **Selección de Fechas:** El usuario selecciona fecha y hora. El **Reservations-Service** verifica disponibilidad de la sala física.
-2. **Nomenclatura Automática:** El sistema asigna nombre automático (ej. *Asamblea General Extraordinaria - 15/10/2025*).
-3. **Integración con Streaming-Service:** Solicita la creación de la sala virtual y genera los enlaces de acceso.
-4. **Estado Inicial:** La asamblea queda con estado **"En Progreso (Agenda Abierta)"**.
-#### 2.2.2. Selección de Puntos de Agenda
+
+#### 3.2.1. Creación de la Convocatoria
+
+| Paso | Acción | Servicio |
+| :--- | :--- | :--- |
+| 1 | Selección de fecha y hora | Governance-Service |
+| 2 | Verificación de disponibilidad de sala | Reservations-Service |
+| 3 | Asignación de nombre automático | Governance-Service |
+| 4 | Creación de sala virtual | Streaming-Service |
+| 5 | Generación de enlaces de acceso | Streaming-Service |
+| 6 | Estado inicial: "En Progreso (Agenda Abierta)" | Governance-Service |
+
+#### 3.2.2. Selección de Puntos de Agenda
+
 El **Governance-Service** presenta un **Panel de Selección de Propuestas**:
-- **Lista tipo Checklist:** Todas las propuestas validadas por Compliance-Service.
-- **Filtros:** Por origen, tipo, área temática o fecha.
-- **Selección Obligatoria:** El sistema impide omitir propuestas legalmente obligatorias (ej. presentación de presupuesto).
-- **Asignación de Orden:** Arrastrar y soltar para definir el orden del día.
-#### 2.2.3. Verificación de Requisitos de Convocatoria
+
+- **Lista tipo Checklist:** Todas las propuestas validadas por Compliance-Service
+- **Filtros:** Por origen, tipo, área temática o fecha
+- **Selección Obligatoria:** El sistema impide omitir propuestas legalmente obligatorias
+- **Asignación de Orden:** Arrastrar y soltar para definir el orden del día
+
+#### 3.2.3. Verificación de Requisitos de Convocatoria
+
 El **Compliance-Service** valida automáticamente:
-- **Antelación Mínima:** Cumple con los días de anticipación requeridos por ley.
-- **Contenido Obligatorio:** La convocatoria incluye todos los elementos exigidos.
-- **Publicidad:** Verifica que se haya notificado a todos los propietarios.
-#### 2.2.4. Generación de Documento y Distribución
-1. **Flujo de Aprobación:** La agenda pasa al Presidente de la Junta para revisión final.
+
+| Requisito | Descripción |
+| :--- | :--- |
+| **Antelación Mínima** | Cumple con los días de anticipación requeridos por ley |
+| **Contenido Obligatorio** | La convocatoria incluye todos los elementos exigidos |
+| **Publicidad** | Verifica que se haya notificado a todos los propietarios |
+
+#### 3.2.4. Generación de Documento y Distribución
+
+1. **Flujo de Aprobación:** La agenda pasa al Presidente de la Junta para revisión final
+
 2. **Generación de Convocatoria Oficial:** El **Documents-Service** genera PDF profesional incluyendo:
-- Encabezado del condominio
-- Orden del día detallado
-- QR de acceso a sala virtual (Streaming-Service)
-- QR de asistencia presencial
+   - Encabezado del condominio
+   - Orden del día detallado
+   - QR de acceso a sala virtual (Streaming-Service)
+   - QR de asistencia presencial
+   - Código QR con hash de integridad (Blockchain-Service)
+
 3. **Publicación:** El **Notifications-Service** envía:
-- Correo electrónico a todos los propietarios
-- Push notification a la app móvil
-- Publicación en el portal web
-#### 2.2.5. Gestión de Múltiples Convocatorias
-- **Quórum y Fechas Alternas:** Configuración por convocatoria (1ª, 2ª, 3ª).
-- **Configuración de Quórum:** Cada fecha con su propio quórum, validado por Compliance-Service.
-- **Automatización:** Si no se alcanza quórum, el sistema notifica y traslada automáticamente.
+   - Correo electrónico a todos los propietarios
+   - Push notification a la app móvil
+   - Publicación en el portal web
+
+#### 3.2.5. Gestión de Múltiples Convocatorias
+
+- **Quórum y Fechas Alternas:** Configuración por convocatoria (1ª, 2ª, 3ª)
+- **Configuración de Quórum:** Cada fecha con su propio quórum, validado por Compliance-Service
+- **Automatización:** Si no se alcanza quórum, el sistema notifica y traslada automáticamente
+
 ---
-### 2.3. Fase 3: Habilitación y Participación (Pre-Asamblea)
-#### 2.3.1. Publicación de Habilitados y Quórum
+
+### 3.3. Fase 3: Habilitación y Participación (Pre-Asamblea)
+
+#### 3.3.1. Publicación de Habilitados y Quórum
+
 El **Governance-Service** consulta al **Finance-Service** y **Compliance-Service** para:
+
 - **Lista de Propietarios Habilitados:** Basada en:
-- Último registro de propiedad
-- Estado de pago de cuotas (sin morosidad)
-- Coeficiente de participación
-- **Cálculo de Quórum:** Visualización en tiempo real del quórum requerido.
-#### 2.3.2. Acceso a la Sala y Herramientas
-- **Asistencia Virtual:** El **Streaming-Service** gestiona la sala virtual, contabilizando la asistencia automáticamente.
-- **Asistencia Presencial:** Los asistentes escanean el QR desde la app móvil.
-- **Chat en Vivo:** Gestionado por **Streaming-Service**, queda registrado como evidencia.
-#### 2.3.3. Verificación de Derecho a Voto
-El **Compliance-Service** valida en tiempo real:
-- El propietario está al día con sus obligaciones.
-- El coeficiente de participación está correctamente calculado.
-- No existen inhabilitaciones judiciales o administrativas.
+  - Último registro de propiedad (vía Authentication-Service)
+  - Estado de pago de cuotas (sin morosidad) (vía Finance-Service)
+  - Coeficiente de participación (vía Compliance-Service)
+
+- **Cálculo de Quórum:** Visualización en tiempo real del quórum requerido
+
+#### 3.3.2. Acceso a la Sala y Herramientas
+
+| Canal | Descripción | Servicio |
+| :--- | :--- | :--- |
+| **Asistencia Virtual** | Sala virtual con contabilización automática | Streaming-Service |
+| **Asistencia Presencial** | Escaneo de QR desde la app móvil | Governance-Service |
+| **Chat en Vivo** | Gestionado y registrado como evidencia | Streaming-Service |
+
+#### 3.3.3. Verificación de Derecho a Voto
+
+El **Compliance-Service** valida en tiempo real a través de **Authentication-Service** y **Finance-Service**:
+
+- El propietario está al día con sus obligaciones
+- El coeficiente de participación está correctamente calculado
+- No existen inhabilitaciones judiciales o administrativas
+- La autenticación del usuario está verificada
+
 **Modo de Emergencia:** Si el Finance-Service falla, el Governance-Service utiliza un caché local de la última información financiera sincronizada, marcando los registros para reconciliación posterior.
+
 ---
-### 2.4. Fase 4: Desarrollo de la Asamblea y Votación
+
+### 3.4. Fase 4: Desarrollo de la Asamblea y Votación
+
 Esta es la fase central del módulo, donde se gestiona la discusión, la votación y la toma de decisiones.
-#### 2.4.1. Inicio de la Sesión
-1. **Comunicado de Inicio:** Anuncio sonoro y visual indicando el inicio y la grabación.
-2. **Inicio de Grabación:** El **Streaming-Service** activa la grabación automática.
-3. **Registro de Asistencia:** El **Streaming-Service** registra todos los accesos con timestamp.
-#### 2.4.2. Gestión de la Agenda en Vivo
-- **Visualización de Puntos:** Mostrados en pantalla, destacando el punto en discusión.
+
+#### 3.4.1. Inicio de la Sesión
+
+| Paso | Acción | Servicio |
+| :--- | :--- | :--- |
+| 1 | Comunicado de inicio (sonoro y visual) | Streaming-Service |
+| 2 | Inicio de grabación automática | Streaming-Service |
+| 3 | Registro de asistencia con timestamp | Streaming-Service |
+| 4 | Verificación de quórum inicial | Compliance-Service |
+
+#### 3.4.2. Gestión de la Agenda en Vivo
+
+- **Visualización de Puntos:** Mostrados en pantalla, destacando el punto en discusión
 - **Panel del Moderador (Administrador):** Herramientas del **Governance-Service**:
-- Control de tiempos de intervención
-- Inicio de votaciones
-- Moderación de chat
-- Visualización consolidada de asistencia y quórum
-#### 2.4.3. Mecanismos de Votación
+  - Control de tiempos de intervención
+  - Inicio de votaciones
+  - Moderación de chat
+  - Visualización consolidada de asistencia y quórum
+
+#### 3.4.3. Mecanismos de Votación
+
 El sistema soporta tres modalidades, todas validadas por **Compliance-Service**:
+
 **A. Voto Virtual (Obligatorio para asistentes virtuales):**
-- Pop-up con la propuesta y botones A Favor / En Contra / Abstengo
-- Voto anónimo pero con unicidad garantizada
-- Registrado en el **Documents-Service** como evidencia
+
+| Característica | Descripción |
+| :--- | :--- |
+| **Interfaz** | Pop-up con la propuesta y botones A Favor / En Contra / Abstengo |
+| **Anonimato** | Voto anónimo pero con unicidad garantizada |
+| **Registro** | Documents-Service como evidencia |
+| **Autenticación** | Authentication-Service valida identidad |
+
 **B. Voto a través de App (Para asistentes presenciales):**
-- Notificación en móvil y votación idéntica a la virtual
-- Registro de ubicación por geolocalización (opcional)
+
+| Característica | Descripción |
+| :--- | :--- |
+| **Interfaz** | Notificación en móvil y votación idéntica a la virtual |
+| **Geolocalización** | Registro de ubicación (opcional) |
+| **Autenticación** | Authentication-Service valida identidad |
+
 **C. Voto Físico con Papeleta (Casos excepcionales):**
-- El administrador ingresa los votos manualmente en el **Governance-Service**
-- **Trazabilidad:** Identificador único para votos manuales vs. virtuales
-- Validación de que el total de votos no exceda los asistentes habilitados
-#### 2.4.4. Cálculo de Mayorías y Resultados en Vivo
+
+| Característica | Descripción |
+| :--- | :--- |
+| **Ingreso Manual** | El administrador ingresa los votos en el Governance-Service |
+| **Trazabilidad** | Identificador único para votos manuales vs. virtuales |
+| **Validación** | El total de votos no excede los asistentes habilitados |
+
+#### 3.4.4. Cálculo de Mayorías y Resultados en Vivo
+
 El **Compliance-Service** calcula en tiempo real:
-- **Quórum alcanzado** (porcentaje de participación)
-- **Mayoría requerida** según el tipo de decisión
-- **Resultados ponderados** por coeficiente de participación
+
+| Métrica | Descripción |
+| :--- | :--- |
+| **Quórum alcanzado** | Porcentaje de participación |
+| **Mayoría requerida** | Según el tipo de decisión |
+| **Resultados ponderados** | Por coeficiente de participación |
+
 **Dashboard en Tiempo Real:**
+
 - Visualización de resultados en video y pantalla de sala
 - Gráficos de barras y porcentajes
 - Indicadores de quórum alcanzado vs. requerido
-#### 2.4.5. Gestión de Puntos Varios
+
+#### 3.4.5. Gestión de Puntos Varios
+
 - Permite incluir puntos no contemplados en la agenda inicial
 - El Compliance-Service evalúa si requieren votación
 - Quedan registrados en el acta como puntos varios
-#### 2.4.6. Cierre de la Sesión
-- El presidente declara cerrada la sesión
-- El **Streaming-Service** detiene la grabación y la almacena
-- El **Governance-Service** cambia el estado a "Cerrada"
+
+#### 3.4.6. Cierre de la Sesión
+
+| Paso | Acción | Servicio |
+| :--- | :--- | :--- |
+| 1 | El presidente declara cerrada la sesión | Governance-Service |
+| 2 | Detención de la grabación | Streaming-Service |
+| 3 | Almacenamiento de la grabación | Streaming-Service → Documents-Service |
+| 4 | Cambio de estado a "Cerrada" | Governance-Service |
+
 ---
-### 2.5. Fase 5: Post-Asamblea – Generación del Acta y Archivo
-#### 2.5.1. Generación Automática con IA y Compliance-Service
+
+### 3.5. Fase 5: Post-Asamblea – Generación del Acta y Archivo
+
+#### 3.5.1. Generación Automática con IA y Compliance-Service
+
 1. **Recepción de Datos:** El **Governance-Service** envía al motor IA y al Compliance-Service:
-- Transcripción de la grabación (Streaming-Service)
-- Historial completo del chat (Streaming-Service)
-- Agenda y resultados de votaciones (Governance-Service)
-- Registro de asistencia (Governance-Service)
-2. **Redacción de Borrador:** La IA redacta el acta en formato legalmente aceptable.
+   - Transcripción de la grabación (Streaming-Service)
+   - Historial completo del chat (Streaming-Service)
+   - Agenda y resultados de votaciones (Governance-Service)
+   - Registro de asistencia (Governance-Service)
+   - Lista de habilitados (Authentication-Service)
+
+2. **Redacción de Borrador:** La IA redacta el acta en formato legalmente aceptable
+
 3. **Validación de Acuerdos:** El Compliance-Service verifica que:
-- Los acuerdos adoptados cumplen con las mayorías requeridas
-- No existen conflictos con leyes o reglamento
-- Las decisiones son ejecutables
-#### 2.5.2. Flujo de Revisión y Edición
-1. **Envío al Presidente:** El borrador del acta se envía al Presidente.
-2. **Editor Avanzado:** Edición con historial de cambios guardado.
-3. **Cierre del Acta:** Una vez aprobada, el **Documents-Service** la sella como inmutable.
-#### 2.5.3. Firma Electrónica y Documento Final
+   - Los acuerdos adoptados cumplen con las mayorías requeridas
+   - No existen conflictos con leyes o reglamento
+   - Las decisiones son ejecutables
+
+#### 3.5.2. Flujo de Revisión y Edición
+
+| Paso | Acción | Responsable |
+| :--- | :--- | :--- |
+| 1 | Envío del borrador al Presidente | Governance-Service |
+| 2 | Edición con historial de cambios | Presidente |
+| 3 | Revisión final | Secretario |
+| 4 | Cierre del acta (sellado como inmutable) | Documents-Service |
+
+#### 3.5.3. Firma Electrónica y Documento Final
+
 1. **Firma Digital:** El **Documents-Service** gestiona la firma electrónica legal:
-- Solo roles autorizados pueden firmar (Presidente, Secretario)
-- Firma con validez legal según la jurisdicción
-- Registro de audit trail completo
-2. **Incorporación de QR:** Código QR a la grabación y al acta original firmada.
-3. **Generación de PDF:** El **Documents-Service** genera el PDF final con todos los anexos.
-4. **Distribución:** El **Notifications-Service** envía el acta a todos los propietarios.
-#### 2.5.4. Archivo Histórico
-- **Biblioteca Digital:** El **Documents-Service** archiva todas las actas, grabaciones y documentos.
-- **Búsqueda Avanzada:** Por fecha, tipo de asamblea, palabras clave, acuerdos adoptados.
-- **Valor Legal:** Almacenamiento inalterable con hash de integridad.
-#### 2.5.5. Actualización Automática de Reglas
+   - Solo roles autorizados pueden firmar (Presidente, Secretario)
+   - Firma con validez legal según la jurisdicción
+   - Registro de audit trail completo
+
+2. **Notarización en Blockchain:** El **Blockchain-Service**:
+   - Genera hash SHA-256 del acta completa
+   - Registra el hash en blockchain público
+   - Genera código QR con el hash
+
+3. **Incorporación de QR:** Código QR a la grabación y al acta original firmada
+
+4. **Generación de PDF:** El **Documents-Service** genera el PDF final con todos los anexos
+
+5. **Distribución:** El **Notifications-Service** envía el acta a todos los propietarios
+
+#### 3.5.4. Archivo Histórico
+
+- **Biblioteca Digital:** El **Documents-Service** archiva todas las actas, grabaciones y documentos
+- **Búsqueda Avanzada:** Por fecha, tipo de asamblea, palabras clave, acuerdos adoptados
+- **Valor Legal:** Almacenamiento inalterable con hash de integridad y notarización blockchain
+
+#### 3.5.5. Actualización Automática de Reglas
+
 Una vez aprobados cambios de reglamento, el **Compliance-Service** actualiza su base de reglas para futuras validaciones.
+
 ---
-## 3. Modo de Emergencia y Resiliencia
+
+## 4. Modo de Emergencia y Resiliencia
+
 El sistema implementa un **Modo de Emergencia** para garantizar la continuidad operativa:
-### 3.1. Principios de Funcionamiento
-- **Degradación Graceful:** Si un servicio falla, las funciones críticas continúan operando con capacidades reducidas.
-- **Caché Local:** Cada servicio mantiene una copia de seguridad de las reglas y datos críticos.
-- **Reconciliación:** Las operaciones realizadas en modo de emergencia se registran y reconcilian cuando los servicios se recuperan.
-### 3.2. Escenarios de Emergencia
+
+### 4.1. Principios de Funcionamiento
+
+| Principio | Descripción |
+| :--- | :--- |
+| **Degradación Graceful** | Si un servicio falla, las funciones críticas continúan operando con capacidades reducidas |
+| **Caché Local** | Cada servicio mantiene una copia de seguridad de las reglas y datos críticos |
+| **Reconciliación** | Las operaciones realizadas en modo de emergencia se registran y reconcilian cuando los servicios se recuperan |
+
+### 4.2. Escenarios de Emergencia
+
 | Servicio Fallido | Impacto | Modo de Emergencia |
 | :--- | :--- | :--- |
 | **Compliance-Service** | No puede validar legalidad | Governance-Service usa caché local de reglas; registra todas las acciones para validación posterior |
@@ -209,180 +503,166 @@ El sistema implementa un **Modo de Emergencia** para garantizar la continuidad o
 | **Streaming-Service** | No hay transmisión virtual | La asamblea continúa presencial; se realiza grabación local con cámara de respaldo |
 | **Notifications-Service** | No envía notificaciones | Governance-Service genera archivos para descarga manual; pendiente de envío |
 | **Documents-Service** | No puede almacenar actas | Governance-Service almacena localmente y programa sincronización |
-### 3.3. Validación Posterior
+| **Authentication-Service** | No puede autenticar usuarios | Se utiliza autenticación offline con verificación posterior |
+
+### 4.3. Validación Posterior
+
 Una vez restablecidos los servicios:
-1. El **Compliance-Service** revalida todas las decisiones tomadas en modo de emergencia.
-2. Si se detectan irregularidades, se notifica a la junta directiva.
-3. Se generan las actas complementarias si es necesario.
+
+1. El **Compliance-Service** revalida todas las decisiones tomadas en modo de emergencia
+2. Si se detectan irregularidades, se notifica a la junta directiva
+3. Se generan las actas complementarias si es necesario
+4. Los datos se reconcilian con los servicios centrales
+
 ---
-## 4. Integración con Otros Servicios
-### 4.1. Governance-Service
-- **Responsabilidad Principal:** Orquestar todo el flujo de la asamblea.
-- **Interacciones:**
-- Inicia propuestas y gestiona su ciclo de vida
-- Coordina la agenda y convocatoria
-- Gestiona el desarrollo de la asamblea y votaciones
-- Orquesta la generación del acta
-### 4.2. Compliance-Service
-- **Responsabilidad Principal:** Validar legalidad y reglamento.
-- **Interacciones:**
-- Verifica validez legal de propuestas
-- Calcula quórum y mayorías requeridas
-- Valida acuerdos adoptados
-- Actualiza reglas internas
-### 4.3. Reservations-Service
-- **Responsabilidad Principal:** Gestionar áreas comunes.
-- **Interacciones:**
-- Reserva sala para asambleas presenciales
-- Verifica disponibilidad de espacios
-- Gestiona aforos máximos
-### 4.4. Asset-Management-Service
-- **Responsabilidad Principal:** Controlar inventario e instalaciones.
-- **Interacciones:**
-- Reporta daños en áreas de reunión
-- Programa mantenimiento preventivo
-- Verifica estado de equipos (proyectores, sonido)
-### 4.5. Finance-Service
-- **Responsabilidad Principal:** Manejar contabilidad y pagos.
-- **Interacciones:**
-- Verifica morosidad para habilitación de voto
-- Valida cuotas al día
-- Proporciona información financiera para asambleas
-### 4.6. Payroll-Service
-- **Responsabilidad Principal:** Administrar pago de empleados.
-- **Interacciones:**
-- Registra asistencia de personal operativo
-- Gestiona pagos de personal de soporte para eventos
-### 4.7. HR-Compliance-Service
-- **Responsabilidad Principal:** Monitorear cumplimiento laboral.
-- **Interacciones:**
-- Valida condiciones del personal de soporte
-- Verifica contratos de servicios externos para asambleas
-### 4.8. Notifications-Service
-- **Responsabilidad Principal:** Canal de comunicación.
-- **Interacciones:**
-- Envía convocatorias, recordatorios y actas
-- Gestiona notificaciones push y correos
-- Envía alertas de quórum y resultados
-### 4.9. Documents-Service
-- **Responsabilidad Principal:** Archivo oficial y firma electrónica.
-- **Interacciones:**
-- Almacena actas y documentos
-- Gestiona firma electrónica legal
-- Proporciona archivo histórico
-- Genera PDFs de convocatorias y actas
-### 4.10. Streaming-Service
-- **Responsabilidad Principal:** Transmisión en vivo.
-- **Interacciones:**
-- Gestiona sala virtual
-- Transmite en vivo las asambleas
-- Registra asistencia remota
-- Genera grabaciones y transcripciones
+
+## 5. Integración con Otros Servicios
+
+### 5.1. Governance-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Orquestar todo el flujo de la asamblea |
+| **Interacciones** | Inicia propuestas, gestiona ciclo de vida, coordina agenda y convocatoria, gestiona desarrollo y votaciones, orquesta generación del acta |
+
+### 5.2. Compliance-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Validar legalidad y reglamento |
+| **Interacciones** | Verifica validez legal de propuestas, calcula quórum y mayorías, valida acuerdos adoptados, actualiza reglas internas |
+
+### 5.3. Authentication-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Gestionar seguridad y control de accesos |
+| **Interacciones** | Autentica usuarios, verifica roles y permisos, valida identidad para votación y firma |
+
+### 5.4. Reservations-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Gestionar áreas comunes |
+| **Interacciones** | Reserva sala para asambleas presenciales, verifica disponibilidad, gestiona aforos máximos |
+
+### 5.5. Asset-Management-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Controlar inventario e instalaciones |
+| **Interacciones** | Reporta daños en áreas de reunión, programa mantenimiento preventivo, verifica estado de equipos |
+
+### 5.6. Finance-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Manejar contabilidad y pagos |
+| **Interacciones** | Verifica morosidad para habilitación de voto, valida cuotas al día, proporciona información financiera para asambleas |
+
+### 5.7. Payroll-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Administrar pago de empleados |
+| **Interacciones** | Registra asistencia de personal operativo, gestiona pagos de personal de soporte para eventos |
+
+### 5.8. HR-Compliance-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Monitorear cumplimiento laboral |
+| **Interacciones** | Valida condiciones del personal de soporte, verifica contratos de servicios externos para asambleas |
+
+### 5.9. Notifications-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Canal de comunicación |
+| **Interacciones** | Envía convocatorias, recordatorios y actas, gestiona notificaciones push y correos, envía alertas de quórum y resultados |
+
+### 5.10. Documents-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Archivo oficial y firma electrónica |
+| **Interacciones** | Almacena actas y documentos, gestiona firma electrónica legal, proporciona archivo histórico, genera PDFs de convocatorias y actas |
+
+### 5.11. Streaming-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Transmisión en vivo |
+| **Interacciones** | Gestiona sala virtual, transmite en vivo, registra asistencia remota, genera grabaciones y transcripciones |
+
+### 5.12. Blockchain-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Notarización e integridad |
+| **Interacciones** | Registra hashes de actas y votaciones, genera códigos QR verificables, garantiza inmutabilidad |
+
+### 5.13. BI/KPI-Service
+
+| Aspecto | Descripción |
+| :--- | :--- |
+| **Responsabilidad Principal** | Análisis y dashboards |
+| **Interacciones** | Consume eventos enriquecidos del módulo, genera métricas y KPIs, proporciona dashboards de participación |
+
+### 5.14. Matriz de Comunicación
+
+| Servicio Origen | Servicio Destino | Tipo | Protocolo | Propósito |
+| :--- | :--- | :--- | :--- | :--- |
+| Governance | Compliance | Síncrono | REST/GraphQL | Validación legal |
+| Governance | Finance | Síncrono | REST | Verificación de morosidad |
+| Governance | Authentication | Síncrono | REST | Verificación de identidad |
+| Governance | Streaming | Asíncrono | Event Bus | Gestión de transmisión |
+| Governance | Notifications | Asíncrono | Event Bus | Envío de notificaciones |
+| Governance | Documents | Asíncrono | Event Bus | Almacenamiento y firma |
+| Governance | Blockchain | Asíncrono | Event Bus | Notarización de documentos |
+| Governance | BI/KPI | Asíncrono | Event Bus | Emisión de eventos enriquecidos |
+| Streaming | Documents | Asíncrono | Event Bus | Almacenamiento de grabaciones |
+
 ---
-## 5. Matriz de Roles y Permisos
-| Rol | Crear Propuesta | Validar Legalidad | Convocar | Votar | Firmar Acta |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Propietario** | ✓ | - | - | ✓ | - |
-| **Inquilino** | ✓ (con respaldos) | - | - | - | - |
-| **Administrador** | ✓ | - | ✓ | - | - |
-| **Presidente Junta** | ✓ | - | ✓ | ✓ | ✓ |
-| **Secretario** | ✓ | - | - | ✓ | ✓ |
-| **Compliance-Service** | - | ✓ | - | - | - |
+
+## 6. Matriz de Roles y Permisos
+
+| Rol | Crear Propuesta | Validar Legalidad | Convocar | Votar | Firmar Acta | Impugnar |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Propietario** | ✓ | - | - | ✓ | - | ✓ |
+| **Inquilino** | ✓ (con respaldos) | - | - | - | - | - |
+| **Administrador** | ✓ | - | ✓ | - | - | - |
+| **Presidente Junta** | ✓ | - | ✓ | ✓ | ✓ | - |
+| **Secretario** | ✓ | - | - | ✓ | ✓ | - |
+| **Comité de Ética** | - | - | - | - | - | ✓ |
+| **Compliance-Service** | - | ✓ | - | - | - | - |
+
 ---
-## 6. Oportunidades de Mejora y Buenas Prácticas Incorporadas
-| Área | Oportunidad de Mejora Incorporada | Servicio Responsable | Beneficio |
+
+## 7. Nuevas Mejoras Incorporadas
+
+### 7.1. Sistema de Impugnaciones y Recursos Legales
+
+**Descripción:** Permite impugnar votos, decisiones o la validez de toda la asamblea, con un flujo formal que garantiza transparencia y debido proceso.
+
+#### Estados de Impugnación
+
+| Estado | Descripción | Responsable | Plazo (configurable) |
 | :--- | :--- | :--- | :--- |
-| **Propuestas** | Biblioteca de Plantillas Inteligentes | Governance-Service | Agiliza creación y asegura cumplimiento legal |
-| **Legal** | Doble Revisión Legal (Previa y Posterior) | Compliance-Service | Garantiza validez desde origen hasta cierre |
-| **Emergencia** | Modo de Emergencia con Reconciliación | Governance-Service + Compliance-Service | Continuidad operativa garantizada |
-| **Moderación** | Panel de Control del Moderador | Governance-Service | Herramientas avanzadas para gestión en vivo |
-| **Votación** | Votación Ponderada por Coeficiente | Governance-Service + Compliance-Service | Equidad proporcional a participación |
-| **Acceso** | Autenticación Biométrica (Mejora Futura) | Governance-Service + Streaming-Service | Capa adicional de seguridad |
-| **Archivo** | Firma Digital y Auditoría | Documents-Service | Valor legal y trazabilidad de cambios |
-| **Notificaciones** | Recordatorios Automáticos Escalonados | Notifications-Service | Mayor participación y quórum |
-| **Accesibilidad** | Subtitulado en Vivo con IA | Streaming-Service + IA | Inclusión para personas con discapacidad auditiva |
-| **Transparencia** | Dashboard Público de Asambleas | Governance-Service | Visibilidad de estados y resultados |
----
-## 7. Consideraciones Técnicas de Microservicios
-### 7.1. Comunicación entre Servicios
-- **Sincrónica (Rest/GraphQL):** Para operaciones que requieren respuesta inmediata (ej. validación de voto).
-- **Asincrónica (Event Bus/Message Queue):** Para operaciones que pueden procesarse en background (ej. generación de acta, envío de notificaciones).
-- **Eventos Principales:**
-- `PropuestaCreada`
-- `PropuestaValidada`
-- `AsambleaConvocada`
-- `VotoRegistrado`
-- `ActaGenerada`
-- `ActaFirmada`
-### 7.2. Consistencia y Transacciones Distribuidas
-- **Saga Pattern:** Para operaciones que involucran múltiples servicios (ej. convocatoria: Governance + Streaming + Notifications).
-- **Compensación:** Transacciones de reversión en caso de fallo (ej. si falla la reserva, cancelar la convocatoria).
-### 7.3. Almacenamiento
-- **Cada servicio con su propia base de datos:** Para independencia y escalabilidad.
-- **Event Sourcing:** Para reconstruir el estado de una asamblea en cualquier momento.
-### 7.4. Monitoreo y Observabilidad
-- **Logs Centralizados:** Para trazabilidad y auditoría.
-- **Métricas en Tiempo Real:** Alertas de anomalías en los procesos.
-- **Distributed Tracing:** Para seguimiento de solicitudes a través de servicios.
----
-## 8. Flujo de Estados de la Asamblea
-El **Governance-Service** gestiona los siguientes estados:
-| Estado | Descripción | Servicio Activo |
+| **Borrador** | Propietario redactando impugnación | Propietario | - |
+| **Presentada** | Impugnación formalmente registrada | Propietario | - |
+| **En Evaluación** | Comité de Ética revisa admisibilidad | Compliance-Service | 5 días hábiles |
+| **Admitida** | Impugnación aceptada para análisis | Compliance-Service | - |
+| **En Resolución** | Comité delibera y resuelve | Comité de Ética | 10 días hábiles |
+| **Resuelta** | Decisión final emitida | Comité de Ética | - |
+| **En Apelación** | Recurso presentado ante Junta | Propietario | 5 días hábiles |
+| **Apelación Resuelta** | Decisión final de Junta | Junta Directiva | 10 días hábiles |
+| **Archivada** | Proceso cerrado | Governance-Service | - |
+
+#### Tipos de Impugnación
+
+| Tipo | Descripción | Requisitos |
 | :--- | :--- | :--- |
-| **Borrador** | Asamblea creada sin agenda | Governance-Service |
-| **Agenda Abierta** | Seleccionando propuestas | Governance-Service |
-| **En Revisión Compliance** | Validando agenda con reglas | Compliance-Service |
-| **En Revisión Presidente** | Agenda en revisión por Presidente | Governance-Service |
-| **Convocada** | Convocatoria publicada y enviada | Governance-Service + Notifications-Service |
-| **En Curso** | Asamblea en desarrollo | Governance-Service + Streaming-Service |
-| **Cerrada** | Asamblea finalizada, generando acta | Governance-Service |
-| **Acta en Revisión** | Borrador del acta en revisión | Governance-Service + Documents-Service |
-| **Acta Firmada** | Acta firmada electrónicamente | Documents-Service |
-| **Finalizada** | Acta distribuida y archivada | Governance-Service + Documents-Service |
-| **Archivada** | Movida a archivo histórico | Documents-Service |
----
-## 9. Conclusión
-El **Módulo de Gestión de Asambleas** descrito en este documento representa una solución integral, moderna y legalmente sólida para la administración de reuniones de propietarios en condominios. La arquitectura de microservicios y la integración con servicios especializados garantizan:
-- **Resiliencia:** Modo de emergencia para continuidad operativa.
-- **Legalidad:** Doble validación por Compliance-Service.
-- **Transparencia:** Procesos auditables y trazables.
-- **Participación:** Múltiples canales de acceso y votación.
-- **Eficiencia:** Automatización con IA en todas las fases.
-- **Escalabilidad:** Arquitectura distribuida para crecimiento.
-Este módulo posiciona al software como una herramienta indispensable para la gobernanza moderna de comunidades, cumpliendo con los más altos estándares de calidad, seguridad y cumplimiento normativo.
----
-## 10. Anexos
-### 10.1. Glosario de Términos
-- **Governance-Service:** Servicio central de gobernanza
-- **Compliance-Service:** Servicio de cumplimiento normativo
-- **Modo de Emergencia:** Operación continuada ante fallos de servicios
-- **Quórum:** Número mínimo de propietarios necesarios para validar una asamblea
-- **Coeficiente de Participación:** Porcentaje de participación de cada propietario en decisiones
-### 10.2. Diagrama de Arquitectura (Referencia)
-```mermaid
-flowchart TD
-%% Nodos Columna Izquierda
-Gov[Governance-Service]
-Stream[Streaming-Service]
-Res[Reservations-Service]
-Fin[Finance-Service]
-Asset[Asset-Management]
-%% Nodos Columna Derecha
-Comp[Compliance-Service]
-Doc[Documents-Service]
-Notif[Notifications-Service]
-Pay[Payroll-Service]
-HR[HR-Compliance-Service]
-%% Conexión Horizontal
-Gov <--> Comp
-%% Conexiones Verticales Izquierda
-Gov <--> Stream
-Stream <--> Res
-Res <--> Fin
-Fin <--> Asset
-%% Conexiones Verticales Derecha
-Comp <--> Doc
-Doc <--> Notif
-Notif <--> Pay
-Pay <--> HR
-```
+| **Voto Individual** | Impugnar un voto específico por irregularidad | Evidencia de irregularidad |
+| **Decisión** | Impugnar un acuerdo adoptado | Violación de mayoría o quórum |
+| **Procedimiento** | Impugnar el desarrollo de la asamblea | Violación de regl
